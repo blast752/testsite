@@ -35,85 +35,63 @@ const products = [
     image: "https://images.sbito.it/api/v1/sbt-ads-images-pro/images/a1/a1fd78ff-86d2-4dfb-9e03-ea16047ee4fe?rule=gallery-desktop-1x-auto",
     link: "https://www.subito.it/informatica/monitor-asus-vg278qf-27-full-hd-165-hz-latina-534813659.htm"
   },
-
-  
   // Aggiungi altri prodotti qui
-  ];
+];
   
-  // Funzione per generare le card dei prodotti
-  function generateProductCards() {
+ // Funzione per generare le card dei prodotti
+const generateProductCards = () => {
   const productGrid = document.querySelector(".product-grid");
-  ini
   
   products.forEach(product => {
-    const card = document.createElement("div");
-    card.classList.add("product-card");
-  
-    const image = document.createElement("img");
-    image.src = product.image;
-    image.alt = product.name;
-    image.srcset = `
-      ${product.image} 1x,
-      ${product.image.replace('gallery-mobile-1x-auto', 'gallery-mobile-2x-auto')} 2x,
-      ${product.image.replace('gallery-mobile-1x-auto', 'gallery-mobile-3x-auto')} 3x
+    const card = `
+      <div class="product-card">
+        <img 
+          src="${product.image}" 
+          alt="${product.name}" 
+          srcset="
+            ${product.image} 1x,
+            ${product.image.replace('gallery-mobile-1x-auto', 'gallery-mobile-2x-auto')} 2x,
+            ${product.image.replace('gallery-mobile-1x-auto', 'gallery-mobile-3x-auto')} 3x
+          "
+          loading="lazy"
+        >
+        <h3>${product.name}</h3>
+        <p>${product.description}</p>
+        <p>${product.price}</p>
+        <a href="${product.link}" class="btn">Acquista su Subito.it</a>
+      </div>
     `;
-    image.loading = "lazy";
-  
-    const name = document.createElement("h3");
-    name.textContent = product.name;
-  
-    const description = document.createElement("p");
-    description.textContent = product.description;
-  
-    const price = document.createElement("p");
-    price.textContent = product.price;
-  
-    const link = document.createElement("a");
-    link.href = product.link;
-    link.classList.add("btn");
-    link.textContent = "Acquista su Subito.it";
-  
-    card.appendChild(image);
-    card.appendChild(name);
-    card.appendChild(description);
-    card.appendChild(price);
-    card.appendChild(link);
-  
-    productGrid.appendChild(card);
+    
+    productGrid.insertAdjacentHTML('beforeend', card);
   });
-  
-  }
-  
-  // Funzione per animare le sezioni al caricamento
-  function animateSections() {
+};
+
+// Funzione per animare le sezioni al caricamento
+const animateSections = () => {
   const sections = document.querySelectorAll("section");
-  ini
   
   sections.forEach(section => {
     const sectionTop = section.getBoundingClientRect().top;
     const windowHeight = window.innerHeight;
-  
+    
     if (sectionTop < windowHeight * 0.8) {
       section.classList.add("animate");
     }
   });
-  
-  }
-  
-  // Genera le card dei prodotti al caricamento della pagina
-  document.addEventListener("DOMContentLoaded", generateProductCards);
-  
-  // Anima le sezioni al caricamento della pagina
-  window.addEventListener("load", animateSections);
-  
-  // Anima le sezioni allo scorrimento della pagina
-  window.addEventListener("scroll", animateSections);
-  
-  // Toggle del menu su dispositivi mobili
-  const menuToggle = document.querySelector(".menu-toggle");
-  const navMenu = document.querySelector("nav ul");
-  
-  menuToggle.addEventListener("click", () => {
-  menuToggle.classList.toggle("active");
+};
+
+// Genera le card dei prodotti al caricamento della pagina
+document.addEventListener("DOMContentLoaded", generateProductCards);
+
+// Anima le sezioni al caricamento e allo scorrimento della pagina
+window.addEventListener("load", animateSections);
+window.addEventListener("scroll", animateSections);
+
+// Toggle del menu su dispositivi mobili
+const menuToggle = document.querySelector(".menu-toggle");
+const navMenu = document.querySelector("nav ul");
+
+menuToggle.addEventListener("click", () => {
+  menuToggle.setAttribute("aria-expanded", menuToggle.getAttribute("aria-expanded") === "false" ? "true" : "false");
   navMenu.classList.toggle("active");
-  });
+});
