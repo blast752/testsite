@@ -173,6 +173,24 @@ h2 {
     margin: 0 auto;
 }
 
+.logo {
+    display: flex;
+    align-items: center;
+  }
+  
+  .logo img {
+    width: 50px;
+    height: 50px;
+    margin-right: 10px;
+  }
+  
+  .logo a {
+    font-size: 24px;
+    font-weight: bold;
+    color: #333;
+    text-decoration: none;
+  }
+
 footer {
     background-color: #333;
     color: #fff;
