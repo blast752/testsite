@@ -35,9 +35,21 @@ async function generateProductCard(product) {
   `;
 }
 
+const productsData = [
+  {
+    image: 'url_immagine_1',
+    link: 'https://www.subito.it/informatica/asus-rog-strix-z690-f-gaming-wifi-nuova-garanzia-latina-551000853.htm'
+  },
+  {
+    image: 'url_immagine_2',
+    link: 'https://www.subito.it/informatica/asus-rog-strix-z690-f-gaming-wifi-nuova-garanzia-latina-551000853.htm'
+  },
+  // ... aggiungi altri oggetti prodotto secondo necessità
+];
+
 async function generateProductCards() {
   const productGrid = document.querySelector(".product-grid");
-  const products = await loadProductData();
+  const products = productsData;
 
   const cardPromises = products.map(async (product) => {
     const cardHTML = await generateProductCard(product);
