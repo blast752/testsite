@@ -1,21 +1,31 @@
-async function loadProductData() {
+async function scrapProductData(productUrl) {
   try {
-    const response = await fetch('products.json');
-    const products = await response.json();
-    return products;
+    const response = await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(productUrl)}`);
+    const { contents } = await response.json();
+
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(contents, 'text/html');
+
+    const name = doc.querySelector('.item-info h1')?.textContent.trim();
+    const price = doc.querySelector('.features__price')?.textContent.trim();
+    const description = doc.querySelector('.item-description__text p')?.textContent.trim();
+
+    return { name, price, description };
   } catch (error) {
-    console.error('Errore durante il caricamento dei dati dei prodotti:', error);
-    return [];
+    console.error('Errore durante lo scraping dei dati del prodotto:', error);
+    return {};
   }
 }
 
-function generateProductCard(product) {
+async function generateProductCard(product) {
+  const { name, price, description } = await scrapProductData(product.link);
+
   return `
     <div class="product-card">
-      <img src="${product.image}" alt="${product.name}" loading="lazy">
-      <h3>${product.name}</h3>
-      <p>${product.description}</p>
-      <p>${product.price}</p>
+      <img src="${product.image}" alt="${name}" loading="lazy">
+      <h3>${name}</h3>
+      <p>${description}</p>
+      <p>${price}</p>
       <a href="${product.link}" class="btn">Acquista su Subito.it</a>
     </div>
   `;
@@ -25,13 +35,15 @@ async function generateProductCards() {
   const productGrid = document.querySelector(".product-grid");
   const products = await loadProductData();
 
-  products.forEach(product => {
-    const cardHTML = generateProductCard(product);
-    productGrid.innerHTML += cardHTML;
+  const cardPromises = products.map(async (product) => {
+    const cardHTML = await generateProductCard(product);
+    return cardHTML;
   });
+
+  const cardHTMLs = await Promise.all(cardPromises);
+  productGrid.innerHTML = cardHTMLs.join('');
 }
 
-// Funzione per animare le sezioni al caricamento
 function animateSections() {
   const sections = document.querySelectorAll("section");
 
@@ -45,14 +57,11 @@ function animateSections() {
   });
 }
 
-// Genera le card dei prodotti al caricamento della pagina
 document.addEventListener("DOMContentLoaded", generateProductCards);
 
-// Anima le sezioni al caricamento e allo scorrimento della pagina
 window.addEventListener("load", animateSections);
 window.addEventListener("scroll", animateSections);
 
-// Toggle del menu su dispositivi mobili
 const menuToggle = document.querySelector(".menu-toggle");
 const navMenu = document.querySelector("nav ul");
 
