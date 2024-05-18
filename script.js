@@ -6,17 +6,21 @@ async function scrapProductData(productUrl) {
     const parser = new DOMParser();
     const doc = parser.parseFromString(contents, 'text/html');
 
-    const name = doc.querySelector('.item-info h1')?.textContent.trim();
-    const price = doc.querySelector('.features__price')?.textContent.trim();
-    const description = doc.querySelector('.item-description__text p')?.textContent.trim();
+    const itemInfo = doc.querySelector('.item-info');
+    const name = itemInfo?.querySelector('h1')?.textContent.trim() || '';
+    const price = itemInfo?.querySelector('.features__price')?.textContent.trim() || '';
+    const description = doc.querySelector('.item-description__text p')?.textContent.trim() || '';
+
+    if (!name && !price && !description) {
+      throw new Error('Impossibile trovare i dati del prodotto');
+    }
 
     return { name, price, description };
   } catch (error) {
     console.error('Errore durante lo scraping dei dati del prodotto:', error);
-    return {};
+    return { name: '', price: '', description: '' };
   }
 }
-
 async function generateProductCard(product) {
   const { name, price, description } = await scrapProductData(product.link);
 
