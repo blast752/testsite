@@ -6,10 +6,9 @@ async function scrapProductData(productUrl) {
     const parser = new DOMParser();
     const doc = parser.parseFromString(contents, 'text/html');
 
-    const itemInfo = doc.querySelector('.item-info');
-    const name = itemInfo?.querySelector('h1')?.textContent.trim() || '';
-    const price = itemInfo?.querySelector('.features__price')?.textContent.trim() || '';
-    const description = doc.querySelector('.item-description__text p')?.textContent.trim() || '';
+    const name = doc.querySelector('.AdInfo_ad-info__title__7jXnY')?.textContent.trim() || '';
+    const price = doc.querySelector('.AdInfo_ad-info__price__tGg9h')?.textContent.trim() || '';
+    const description = doc.querySelector('.AdDescription_description__gUbvH')?.textContent.trim() || '';
 
     if (!name && !price && !description) {
       throw new Error('Impossibile trovare i dati del prodotto');
